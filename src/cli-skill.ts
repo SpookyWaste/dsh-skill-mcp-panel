@@ -29,8 +29,8 @@ import { basename, dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { homedir, tmpdir } from "node:os";
 import { unzipSync } from "fflate";
-import { createInterface } from "node:readline";
 import { spawn } from "node:child_process";
+import { confirm } from "./cli-prompt.js";
 import {
   DISABLED_SUFFIX,
   buildRoots,
@@ -69,17 +69,6 @@ function usage() {
     "CLI 只扫描当前目录锚定的项目根与用户根；管理其他工作区的技能请加 --cwd <工作区路径>。",
     "随部署附带的技能（bundled）不在本工具管理范围内。"
   ].join("\n"));
-}
-
-async function confirm(question) {
-  const rl = createInterface({ input: process.stdin, output: process.stdout });
-  const answer = await new Promise((resolvePromise) => {
-    rl.question(question, (value) => {
-      rl.close();
-      resolvePromise(value.trim().toLowerCase());
-    });
-  });
-  return answer === "y" || answer === "yes";
 }
 
 /** 以与宿主插件相同的方式解析用户根目录。 */

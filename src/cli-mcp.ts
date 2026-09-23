@@ -10,7 +10,6 @@
  * `test --workspace` 只能用 CLI 进程环境里的值做探活，会把缺值情况打印出来。
  */
 import { readFile } from "node:fs/promises";
-import { createInterface } from "node:readline";
 import { join, resolve } from "node:path";
 import { resolveDshHome } from "@deepseek-ai/dsh-home-paths";
 import {
@@ -41,6 +40,7 @@ import {
   type WorkspaceMcpServer
 } from "./mcp/workspace-store.js";
 import { normalizeWorkspace } from "./scope.js";
+import { confirm } from "./cli-prompt.js";
 import { runSkillCli } from "./cli-skill.js";
 
 function profilePatchPath(profile: string): string {
@@ -68,6 +68,19 @@ async function globalServerNames(profile: string): Promise<Set<string>> {
     if (name !== undefined) names.add(name);
   }
   return names;
+}
+
+/**
+ * 读一个工作区的声明；文件损坏、结构非法或版本不认识时响亮失败。
+ *
+ * 写路径绝不在这种状态下继续：`readWorkspaceServers` 这时返回空列表，直接写回
+ * 会把文件里已有的全部声明静默丢掉（`list` 也一样——它此前只是打印并退 1，
+ * 现在与写路径共用同一次读取判定）。
+ */
+async function workspaceServersOrFail(projectRoot: string): Promise<WorkspaceMcpServer[]> {
+  const store = await readWorkspaceServers(projectRoot);
+  if (!store.ok) throw new Error(String(store.error));
+  return store.servers;
 }
 
 function usage() {
@@ -99,17 +112,6 @@ function usage() {
   );
 }
 
-async function confirm(question: string): Promise<boolean> {
-  const rl = createInterface({ input: process.stdin, output: process.stdout });
-  const answer = await new Promise<string>((resolvePromise) => {
-    rl.question(question, (value) => {
-      rl.close();
-      resolvePromise(value.trim().toLowerCase());
-    });
-  });
-  return answer === "y" || answer === "yes";
-}
-
 function parsePairs(values: string[]): Record<string, string> {
   const out: Record<string, string> = {};
   for (const value of values) {
@@ -120,6 +122,29 @@ function parsePairs(values: string[]): Record<string, string> {
     out[key] = value.slice(index + 1);
   }
   return out;
+}
+
+/**
+ * 传输方式与其专属参数不匹配时响亮失败。
+ *
+ * 这些参数在另一种传输下以前是被静默丢弃的：`--http --env-key X` 会写出一个
+ * 完全没有凭证声明的服务器，`--stdio --header-key X` 同理——用户以为配了鉴权，
+ * 落盘的声明里却没有；`--http --args ...` 之类的错配同属这一类。
+ */
+function assertTransportMatch(flags: any): void {
+  if (flags.stdio === true) {
+    if (flags.headers.length > 0 || flags.headerKeys.length > 0) {
+      throw new Error("--header/--header-key 只用于 --http：stdio 服务器的凭证走环境变量");
+    }
+    if (flags.url !== undefined) throw new Error("--url 只用于 --http");
+    return;
+  }
+  if (flags.env.length > 0 || flags.envKeys.length > 0) {
+    throw new Error("--env/--env-key 只用于 --stdio：HTTP 服务器的凭证走 header");
+  }
+  if (flags.command !== undefined) throw new Error("--command 只用于 --stdio");
+  if (flags.args.length > 0) throw new Error("--args 只用于 --stdio");
+  if (flags.cwd !== undefined) throw new Error("--cwd 只用于 --stdio（HTTP 服务器没有子进程工作目录）");
 }
 
 type AddArgs =
@@ -206,6 +231,7 @@ async function buildAddArgs(args: string[]): Promise<AddArgs> {
         "--workspace 作用域不存密钥值：请用 --env-key/--header-key 只声明键名，值在 Web 面板的「MCP」页设置（写入 DSH 官方凭证存储）"
       );
     }
+    assertTransportMatch(flags);
     const draft: any =
       flags.stdio === true
         ? {
@@ -236,6 +262,7 @@ async function buildAddArgs(args: string[]): Promise<AddArgs> {
   if (flags.envKeys.length > 0 || flags.headerKeys.length > 0) {
     throw new Error("--env-key/--header-key 只用于 --workspace 作用域；全局作用域请用 --env/--header 传 KEY=VALUE");
   }
+  assertTransportMatch(flags);
   let input: McpServerInput;
   if (flags.stdio === true) {
     if (flags.command === undefined) throw new Error("--stdio 需要 --command");
@@ -257,7 +284,7 @@ const processEnvProvider = {
 };
 
 async function probeWorkspaceServer(projectRoot: string, name: string) {
-  const { servers } = await readWorkspaceServers(projectRoot);
+  const servers = await workspaceServersOrFail(projectRoot);
   const server = servers.find((candidate) => candidate.serverName === name);
   if (server === undefined) throw new Error('该工作区没有 serverName "' + name + '"（' + workspaceMcpFile(projectRoot) + "）");
   const seam = await loadCredentialSeam();
@@ -300,22 +327,8 @@ export async function runMcpCli(args: string[]): Promise<number> {
     return runSkillCli(["update", ...args.slice(1)]);
   }
 
-  const flags: any = { profile: "web", yes: false };
-  const positional: string[] = [];
-  for (let i = 1; i < args.length; i++) {
-    const arg = args[i];
-    if (arg === "--profile") {
-      i += 1;
-      if (i >= args.length) throw new Error("--profile 需要一个配置名参数");
-      flags.profile = args[i];
-    } else if (arg === "--workspace") {
-      i += 1;
-      if (i >= args.length) throw new Error("--workspace 需要一个工作区路径参数");
-      flags.workspace = args[i];
-    } else if (arg === "--yes") flags.yes = true;
-    else positional.push(arg);
-  }
-
+  // add 的 flag 集合与其余子命令不同（--name/--stdio/--command/--env/--env-key …），
+  // 由 buildAddArgs 独占解析；放进通用循环会让它认不出的 flag 一律变成 positional。
   if (command === "add") {
     const built = await buildAddArgs(args.slice(1));
     if (built.kind === "workspace") {
@@ -324,7 +337,7 @@ export async function runMcpCli(args: string[]): Promise<number> {
       if (globals.has(built.server.serverName)) {
         throw new Error('serverName "' + built.server.serverName + '" 已被全局作用域占用（同名会让会话解析出两组工具，请换名）');
       }
-      const { servers } = await readWorkspaceServers(projectRoot);
+      const servers = await workspaceServersOrFail(projectRoot);
       if (servers.some((candidate) => candidate.serverName === built.server.serverName)) {
         throw new Error('该工作区中已存在 serverName "' + built.server.serverName + '"');
       }
@@ -346,24 +359,44 @@ export async function runMcpCli(args: string[]): Promise<number> {
     return 0;
   }
 
+  // 其余子命令共用一套 flag；未知 flag 必须响亮失败——以前它们被当成 positional
+  // 静默忽略，于是 `remove X --workspce <路径>` 会去删**全局**的同名服务器，
+  // `list --project` 会静默退化成全局列表。
+  const flags: any = { profile: "web", yes: false };
+  const positional: string[] = [];
+  for (let i = 1; i < args.length; i++) {
+    const arg = args[i];
+    if (arg === "--profile") {
+      i += 1;
+      if (i >= args.length) throw new Error("--profile 需要一个配置名参数");
+      flags.profile = args[i];
+    } else if (arg === "--workspace") {
+      i += 1;
+      if (i >= args.length) throw new Error("--workspace 需要一个工作区路径参数");
+      flags.workspace = args[i];
+    } else if (arg === "--yes") flags.yes = true;
+    else if (arg === "--help" || arg === "-h") {
+      usage();
+      return 0;
+    } else if (arg.startsWith("-")) throw new Error("未知参数：" + arg);
+    else positional.push(arg);
+  }
+
   if (command === "list") {
     if (flags.workspace !== undefined) {
       const projectRoot = await normalizeWorkspace(flags.workspace);
-      const store = await readWorkspaceServers(projectRoot);
-      if (!store.ok) {
-        console.error(String(store.error));
-        return 1;
-      }
-      if (store.servers.length === 0) {
-        console.log("该工作区没有 MCP 服务器。（" + store.path + "）");
+      const servers = await workspaceServersOrFail(projectRoot);
+      const path = workspaceMcpFile(projectRoot);
+      if (servers.length === 0) {
+        console.log("该工作区没有 MCP 服务器。（" + path + "）");
         return 0;
       }
       const globals = await globalServerNames(flags.profile);
-      for (const server of store.servers) {
+      for (const server of servers) {
         const conflict = globals.has(server.serverName) ? "      与全局同名（已忽略）" : "";
         console.log(workspaceServerLine(server) + conflict);
       }
-      console.log("（" + store.path + "）");
+      console.log("（" + path + "）");
       return 0;
     }
     const { managed, external } = await readRows(flags.profile);
@@ -390,7 +423,7 @@ export async function runMcpCli(args: string[]): Promise<number> {
     }
     if (flags.workspace !== undefined) {
       const projectRoot = await normalizeWorkspace(flags.workspace);
-      const { servers } = await readWorkspaceServers(projectRoot);
+      const servers = await workspaceServersOrFail(projectRoot);
       const server = servers.find((candidate) => candidate.serverName === name);
       if (server === undefined) throw new Error('该工作区没有 serverName "' + name + '"');
       if (command === "remove") {

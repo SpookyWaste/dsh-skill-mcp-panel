@@ -165,6 +165,25 @@ try {
     assert.deepEqual(credentialCalls, [], "非法声明不得先写凭证再报错");
     pass("workspaceSave refuses an invalid credential reference name before any write");
 
+    // 8b. 文件损坏 / 版本不认识 → 保存响亮失败，绝不覆盖（此前读失败返回空列表，写回即丢掉全部声明）
+    const intact = await readFile(join(workspace, ".dsh", "mcp.json"), "utf8");
+    const unrecognized = JSON.stringify({ version: 2, servers: [] }) + "\n";
+    for (const broken of ["{ not json", unrecognized]) {
+      await writeFile(join(workspace, ".dsh", "mcp.json"), broken, "utf8");
+      credentialCalls.length = 0;
+      let rejected = false;
+      try {
+        await gateway.workspaceSave({ scope: workspace, input: { serverName: "overwrite", transport: "stdio", command: "node" } });
+      } catch (error) {
+        rejected = /无效/.test(String(error?.message ?? error));
+      }
+      assert.equal(rejected, true, "损坏声明文件上的保存必须抛错");
+      assert.equal(await readFile(join(workspace, ".dsh", "mcp.json"), "utf8"), broken, "声明文件必须保持字节不变");
+      assert.deepEqual(credentialCalls, [], "保存失败时不得产生凭证写副作用");
+    }
+    await writeFile(join(workspace, ".dsh", "mcp.json"), intact, "utf8");
+    pass("workspaceSave refuses to overwrite a corrupt or unrecognized declaration file");
+
     // 9. 启停 + 删除
     const disabled = await gateway.workspaceSetEnabled({ scope: workspace, serverName: "example", enabled: false });
     assert.equal(disabled.workspace.servers.find((item) => item.serverName === "example").enabled, false);
