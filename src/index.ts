@@ -28,6 +28,7 @@ import {
   upsertGroup
 } from "./groups.js";
 import { compareVersions, currentVersion, fetchLatestVersion } from "./version.js";
+import { foldWorkspaces, type WorkspaceRow } from "./workspaces.js";
 import { McpManagerGateway } from "./mcp/gateway.js";
 import { WorkspaceMcpRuntime } from "./mcp/runtime.js";
 import { ensureGlobalShim } from "./global-shim.js";
@@ -100,7 +101,15 @@ const checkUpdateResultSchema = z.object({
 const listResultSchema = z.object({ skills: z.array(skillSummarySchema) });
 
 const workspacesResultSchema = z.object({
-  workspaces: z.array(z.object({ path: z.string(), label: z.string(), sessions: z.number() }))
+  workspaces: z.array(
+    z.object({
+      path: z.string(),
+      label: z.string(),
+      /** 与 `label` 共用同一份声明的其他工作区名（可能为空）。 */
+      aliases: z.array(z.string()),
+      sessions: z.number()
+    })
+  )
 });
 
 const resourceBaseSchema = z
@@ -574,11 +583,16 @@ class SkillsViewerGateway extends TypertRemoteService {
       .sort((a, b) => a.name.localeCompare(b.name));
   }
 
-  /** 所有已知工作区的互不相同的项目根（供工作区横栏使用）。 */
+  /**
+   * 所有已知工作区折叠成的互不相同项目根（供工作区横栏使用）。
+   *
+   * 口径分两段：这里只负责把「来源」解析成项目根（要 stat 与向上找 `.git`，都
+   * 碰文件系统），折叠与显示名归属交给纯函数 `foldWorkspaces`——同一根下的多个
+   * DSH 工作区共用一份声明，面板给一条作用域并把其余名字作为别名带出去。
+   */
   async enumerateWorkspaces() {
-    const map = new Map();
-    const keyOf = (path) => process.platform === "win32" ? path.toLowerCase() : path;
-    const add = async (path, label, sessions) => {
+    const rows: WorkspaceRow[] = [];
+    const collect = async (path: any, title: string | undefined, sessions: number) => {
       if (typeof path !== "string" || path === "") return;
       // 幽灵条目防护：目录已不存在（例如被移到回收站）的工作区/会话 cwd
       // 不再出现在工作区列表中。
@@ -590,9 +604,7 @@ class SkillsViewerGateway extends TypertRemoteService {
       } catch {
         return;
       }
-      const key = keyOf(project);
-      if (map.has(key)) return;
-      map.set(key, { path: project, label: label || basename(project) || project, sessions: sessions ?? 0 });
+      rows.push({ project, path: resolvePath(path), title, sessions });
     };
     try {
       const registry = this.C.get("workspaceRegistry");
@@ -603,7 +615,11 @@ class SkillsViewerGateway extends TypertRemoteService {
           } catch {
             // 状态探测不可用：保留记录
           }
-          await add(workspace.path, workspace.title, Array.isArray(workspace.sessionIds) ? workspace.sessionIds.length : 0);
+          await collect(
+            workspace.path,
+            typeof workspace.title === "string" ? workspace.title : undefined,
+            Array.isArray(workspace.sessionIds) ? workspace.sessionIds.length : 0
+          );
         }
       }
     } catch {
@@ -613,12 +629,12 @@ class SkillsViewerGateway extends TypertRemoteService {
       for (const session of this.C.sessions.list()) {
         const cwd = session.header?.cwd;
         if (cwd === undefined || cwd === "") continue;
-        await add(resolvePath(cwd), undefined, 1);
+        await collect(cwd, undefined, 1);
       }
     } catch {
       // 会话列表不可用：返回空选择器
     }
-    return { workspaces: [...map.values()].sort((a, b) => a.label.localeCompare(b.label) || a.path.localeCompare(b.path)) };
+    return { workspaces: foldWorkspaces(rows) };
   }
 
   /** 定位技能：注册表在线行、普通文件条目，或不存在。 */

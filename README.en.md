@@ -6,15 +6,15 @@ Original author: [Fishquito7](https://github.com/Fishquito7)
 
 ## What this fork changes
 
-- **MCP workspace scope**: MCP servers can be declared per workspace in `<workspace>/.dsh/mcp.json`, in effect only for sessions whose cwd resolves to that workspace (its project root) — the tools register into that session's own agent scope and unwind with it. A scope switch at the top of the panel moves between “Global” and “Workspace”. The file **records key names only** (`envKeys` and `headerRefs`); values are written by the host into DSH's official credential store, so the file can be committed with the workspace repository.
+- **MCP workspace scope**: MCP servers can be declared per workspace in `<workspace>/.dsh/mcp.json`, in effect only for sessions whose cwd resolves to that workspace (its project root) — the tools register into that session's own agent scope and unwind with it. A scope switch at the top of the panel moves between “Global” and “Workspace”. The file **records key names only** (`envKeys` and `headerRefs`); values are written by the host into DSH's official credential store.
 - **The CLI covers the workspace scope too**: `add` / `list` / `remove` / `enable` / `disable` / `test` under `dsh-panel mcp` all accept `--workspace <path>`, matching the global-scope syntax, but declare key names only (`--env-key` / `--header-key`).
-- **DSH 0.1.7-alpha compatibility**: the host renamed several icon primitives from `IconXxx16` to `IconXxxRegular`; the old names resolve to `undefined`, which makes React throw “Element type is invalid”, retires the keyed panel entry and leaves the skills page blank. The build now resolves the new name first and falls back to the legacy one, so one artifact works on both DSH generations.
+- **DSH 0.1.7-alpha compatibility**: the build now resolves the new icon names first and falls back to the legacy ones, so one artifact works on both DSH generations.
 - **CLI argument and write-path hardening**: unknown flags are no longer silently treated as positional arguments (a typo like `--workspce` used to mutate the **global** scope), a credential flag that does not match the transport now fails loudly instead of being dropped, a corrupt or unrecognized workspace declaration file is never overwritten (previously its declarations were wiped), and confirmation prompts on a non-interactive stdin now require an explicit `--yes`.
 
 ## Usage (fork additions)
 
 ```bash
-# Workspace scope → <workspace>/.dsh/mcp.json (key names only, never a value)
+# Workspace scope → <workspace>/.dsh/mcp.json (key names only, never a value; the path normalizes to its project root)
 dsh-panel mcp list --workspace <path>
 dsh-panel mcp add --workspace <path> --name <serverName> --stdio --command <cmd> [--args <arg> ...] [--env-key NAME ...] [--cwd <path>]
 dsh-panel mcp add --workspace <path> --name <serverName> --http --url <url> [--header-key NAME ...]
@@ -34,6 +34,8 @@ Installation is the same as upstream (the npm package and Release tarball are pu
 ### 2026-09-23
   - fix: DSH 0.1.7-alpha.1 compatibility
   - fix: CLI workspace scope — unknown flags, transport mismatches, overwriting a corrupt file, non-interactive confirmation
+### 2026-09-24
+  - fix: the skills and MCP panels now show scopes folded onto their project root
 
 ## Todo
 

@@ -6,15 +6,15 @@ Fork自[dsh-skill-mcp-panel](https://github.com/Fishquito7/dsh-skill-mcp-panel)�
 
 ## 本 fork 的改动
 
-- **MCP 工作区作用域**：MCP 服务器可以按工作区声明，写在 `<工作区>/.dsh/mcp.json`，只对 cwd 落在该工作区（项目根）的会话生效——工具注册进该会话自己的 agent 作用域，随会话释放一起回卷；面板顶部可在「全局 / 工作区」之间切换。该文件**只记键名**（`envKeys` 与 `headerRefs`），值由宿主写进 DSH 官方凭证存储，所以可以随工作区仓库提交。
+- **MCP 工作区作用域**：MCP 服务器可以按工作区声明，写在 `<工作区>/.dsh/mcp.json`，只对 cwd 落在该工作区（项目根）的会话生效——工具注册进该会话自己的 agent 作用域，随会话释放一起回卷；面板顶部可在「全局 / 工作区」之间切换。该文件**只记键名**（`envKeys` 与 `headerRefs`），值由宿主写进 DSH 官方凭证存储。
 - **CLI 同步支持工作区作用域**：`dsh-panel mcp` 的 `add` / `list` / `remove` / `enable` / `disable` / `test` 都接受 `--workspace <path>`，写法与全局作用域对齐，但只声明键名（`--env-key` / `--header-key`）。
-- **DSH 0.1.7-alpha 适配**：宿主把若干图标 primitive 从 `IconXxx16` 改名为 `IconXxxRegular`，旧名字解析成 `undefined` 会让 React 抛「Element type is invalid」，keyed 面板条目被退休、技能页整页空白。现在按新名优先、旧名回退解析，同一份构建同时兼容两代 DSH。
+- **DSH 0.1.7-alpha 适配**：现在按新名优先、旧名回退解析，同一份构建同时兼容两代 DSH。
 - **CLI 参数与写路径收敛**：未知 flag 不再被当成位置参数静默忽略（`--workspce` 拼错以前会去改**全局**作用域），传输方式与凭证参数错配会报错而不是静默丢弃，工作区声明文件损坏或版本不认识时写路径拒绝覆盖（不再清空已有声明），非交互 stdin 下的确认操作要求显式 `--yes`。
 
 ## 用法（本 fork 新增部分）
 
 ```bash
-# 工作区作用域 → <工作区>/.dsh/mcp.json（只记键名，不存密钥值）
+# 工作区作用域 → <工作区>/.dsh/mcp.json（只记键名，不存密钥值；路径归一化到项目根）
 dsh-panel mcp list --workspace <path>
 dsh-panel mcp add --workspace <path> --name <serverName> --stdio --command <cmd> [--args <arg> ...] [--env-key NAME ...] [--cwd <path>]
 dsh-panel mcp add --workspace <path> --name <serverName> --http --url <url> [--header-key NAME ...]
@@ -34,6 +34,8 @@ dsh-panel mcp test --workspace <path> <serverName>
 ### 2026-09-23
   - fix: DSH 0.1.7-alpha1适配
   - fix: CLI 工作区作用域的未知 flag、传输错配、损坏文件覆盖、非交互确认
+### 2026-09-24
+  - fix: skill和MCP面板现在显示合并到项目根的作用域
 
 ## Todo
 

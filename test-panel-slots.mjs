@@ -376,9 +376,34 @@ check("workspace scope styles are shipped with the MCP stylesheet", () => {
   assert.ok(css.includes(".MCP_scopeBar{"), "scope bar styles missing");
   assert.ok(css.includes(".MCP_scopeLabel{"), "scope label style missing");
   assert.ok(css.includes(".MCP_scopeBtn[data-active=true]"), "active scope button rule missing");
+  // A2（主名 + 被并入工作区的弱色别名）：别名规则只有一份，定义在技能半区的样式表里，
+  // MCP 半区只补选中态的覆盖——所以两条断言必须分别落在各自该在的位置上。
+  assert.ok(css.includes(".SKV_scopeRow{"), "two-segment scope label row style missing");
+  assert.ok(css.includes(".SKV_scopeName{"), "truncatable scope name style missing");
+  assert.ok(css.includes(".SKV_scopeAlias{"), "scope alias style missing");
+  const mcpTag = styleTags.find((tag) => String(tag.textContent ?? "").includes(".MCP_scopeBar{"));
+  assert.ok(mcpTag, "no style tag carries the MCP stylesheet");
+  assert.ok(
+    String(mcpTag.textContent).includes(".MCP_scopeBtn[data-active=true] .SKV_scopeAlias{"),
+    "the active chip must override the alias color (72% white on the filled chip)"
+  );
   // 卡片凭证区已被表单取代：相关样式与文案都不该再被发出去。
   assert.equal(/MCP_secret(Row|Input|Box|Name|Badge)/.test(css), false, "removed credential-row styles are still shipped");
   assert.equal(/keysOnlyHint|secretsTitle|secretsLoading|workspaceFile|workspaceMounted|workspaceMissing/.test(source), false, "removed strings are still shipped");
+});
+
+check("both pages fold the same project root into one scope and name the folded workspaces", () => {
+  // 枚举口径只在宿主一处（foldWorkspaces）；前端只读 label + aliases，不自己判断谁并谁。
+  assert.ok(source.includes("const wsAliases = (entry) =>"), "shared alias reader missing");
+  assert.ok(source.includes("const wsDisplay = (workspaces, path) =>"), "shared display helper missing");
+  assert.ok(source.includes("const wsHoverTitle = (display) =>"), "shared hover-title composer missing");
+  assert.ok(source.includes("wsDisplay(workspaceList, workspace.path)"), "the MCP chip must read its display through the shared helper");
+  assert.ok(source.includes("title: wsHoverTitle(display)"), "the MCP chip must carry the folded workspace names as a hover title");
+  assert.ok(source.includes('display.aliases.join(" · ")'), "the folded workspace names must be listed next to the primary name");
+  assert.equal(source.includes('"+" + folded'), false, "the +N count badge must be gone (A2 lists the names instead)");
+  assert.equal(/SKV_scopeCount/.test(source), false, "dead count-badge style/class left behind");
+  assert.ok(source.includes("label: key === \"global\" ? t(\"scopeGlobal\") : scopeLabelNode(key)"), "skills dropdown items must use the two-segment label node");
+  assert.ok(source.includes("children: scopeFilter === \"global\" ? t(\"scopeGlobal\") : scopeLabelNode(scopeFilter)"), "the scope trigger must use the two-segment label node");
 });
 
 check("the two MCP dictionaries declare exactly the same keys", () => {
@@ -400,7 +425,7 @@ check("the two MCP dictionaries declare exactly the same keys", () => {
   assert.deepEqual(onlyEn, [], "keys present only in mcpEn: " + onlyEn.join(", "));
   assert.ok(zh.size > 20, "dictionary parse looks wrong: only " + zh.size + " keys");
   // 渲染里引用的 t("...") 必须都在字典里（MCP 页用到的这部分键名逐个点名）。
-  for (const key of ["scopeLabel", "scopeGlobal", "scopeWorkspaceBadge", "workspaceSubtitle", "workspaceEmpty", "workspaceConflict", "workspaceOnlyNewSessions", "fieldEnv", "fieldHeaders"]) {
+  for (const key of ["scopeLabel", "scopeGlobal", "scopeWorkspaceBadge", "workspaceSubtitle", "workspaceEmpty", "workspaceConflict", "fieldEnv", "fieldHeaders"]) {
     assert.ok(zh.has(key), "mcpZh is missing a key the panel renders: " + key);
   }
 });

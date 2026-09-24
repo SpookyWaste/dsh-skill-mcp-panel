@@ -83,7 +83,7 @@ const cssEffects = "@keyframes skvFadeIn{from{opacity:0;transform:translateY(-4p
 // 超出部分在宿主 Menu 自己的 .viewport 里滚动。Menu 以 portal 渲染到 document.body，
 // 拿不到它的 DOM 层级，故用 :has() 以「我们的下拉正打开」为条件精确限定，
 // 不影响宿主自己的其它菜单；:has() 不可用时该规则失效，退化为原来的整屏上限。
-const cssChipRefresh = ".SKV_scopeBar{gap:4px;padding:2px 2px 6px}.SKV_groupBar{gap:5px;padding:2px}.SKV_groupItem{background:transparent;border:1px solid transparent;border-radius:8px;padding:6px 12px;font-size:13px;line-height:18px}.SKV_groupItem:hover{background:var(--dsw-alias-interactive-bg-hover);border-color:transparent;color:var(--dsw-alias-label-primary)}.SKV_groupItem[data-active=true]{background:color-mix(in srgb, var(--dsw-alias-state-business-primary) 14%, transparent);border-color:transparent;font-weight:500}.SKV_categoryBar{gap:6px 8px}.SKV_categoryChip{background:transparent;border:1px solid transparent;border-radius:7px;padding:5px 12px;font-size:12px}.SKV_categoryChip:hover{background:var(--dsw-alias-interactive-bg-hover);border-color:transparent}.SKV_categoryChip[data-active=true]{background:color-mix(in srgb, var(--dsw-alias-state-business-primary) 14%, transparent);border-color:transparent;font-weight:500}body:has(.SKV_scopeSelect[aria-expanded=true])>div[role=menu]{max-height:min(448px,calc(100vh - 24px))}";
+const cssChipRefresh = ".SKV_scopeBar{gap:4px;padding:2px 2px 6px}.SKV_groupBar{gap:5px;padding:2px}.SKV_groupItem{background:transparent;border:1px solid transparent;border-radius:8px;padding:6px 12px;font-size:13px;line-height:18px}.SKV_groupItem:hover{background:var(--dsw-alias-interactive-bg-hover);border-color:transparent;color:var(--dsw-alias-label-primary)}.SKV_groupItem[data-active=true]{background:color-mix(in srgb, var(--dsw-alias-state-business-primary) 14%, transparent);border-color:transparent;font-weight:500}.SKV_categoryBar{gap:6px 8px}.SKV_categoryChip{background:transparent;border:1px solid transparent;border-radius:7px;padding:5px 12px;font-size:12px}.SKV_categoryChip:hover{background:var(--dsw-alias-interactive-bg-hover);border-color:transparent}.SKV_categoryChip[data-active=true]{background:color-mix(in srgb, var(--dsw-alias-state-business-primary) 14%, transparent);border-color:transparent;font-weight:500}body:has(.SKV_scopeSelect[aria-expanded=true])>div[role=menu]{max-height:min(448px,calc(100vh - 24px))}.SKV_scopeRow{display:flex;align-items:center;gap:6px;min-width:0}.SKV_scopeName{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.SKV_scopeAlias{font-size:11px;line-height:18px;color:var(--dsw-alias-label-tertiary);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.MCP_scopeBtn .SKV_scopeAlias{margin-left:6px}";
 // 分组：对话框侧栏、分组横栏 chip（含启用/总数）与卡片上方的整组启停胶囊按钮（补齐 2.0.2 的 cssGroupDelete）
 const cssGroups = ".SKV_groupItemWrap{position:relative;display:inline-flex;align-items:center;gap:2px}.SKV_groupSideItemWrap{position:relative;display:flex;align-items:center;min-width:0}.SKV_groupSideItemWrap .SKV_groupSideItem{flex:1;min-width:0}.SKV_groupDelete{display:none;width:16px;height:16px;color:var(--dsw-alias-label-tertiary);font:inherit;font-size:12px;line-height:14px;cursor:pointer;background:0 0;border:none;border-radius:999px;padding:0;margin-left:2px;flex:none}.SKV_groupSideItemWrap:hover .SKV_groupDelete{display:inline-flex}.SKV_groupDelete:hover{color:var(--dsw-alias-state-error-primary);background:color-mix(in srgb, var(--dsw-alias-state-error-primary) 10%, transparent)}.SKV_groupDelete[data-confirm=true]{display:inline-flex;width:auto;height:18px;padding:0 7px;color:var(--dsw-alias-state-error-primary);background:color-mix(in srgb, var(--dsw-alias-state-error-primary) 10%, transparent)}.SKV_groupToggle{font:inherit;font-size:11px;line-height:16px;color:var(--dsw-alias-label-tertiary);font-variant-numeric:tabular-nums;white-space:nowrap;cursor:pointer;background:0 0;border:1px solid var(--dsw-alias-border-l2);border-radius:999px;padding:1px 7px;margin-left:2px;flex:none}.SKV_groupToggle:hover:not(:disabled){background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-primary)}.SKV_groupToggle[data-on=true]{color:var(--dsw-alias-state-success-primary);border-color:color-mix(in srgb, var(--dsw-alias-state-success-primary) 40%, transparent)}.SKV_groupToggle:disabled{opacity:.6;cursor:not-allowed}.SKV_groupItem{display:inline-flex;align-items:center}.SKV_groupItemCount{color:var(--dsw-alias-label-tertiary);font-variant-numeric:tabular-nums;font-size:11px;line-height:15px;margin-left:4px}.SKV_groupItem[data-active=true] .SKV_groupItemCount{color:inherit}.SKV_groupBulkRow{display:flex;align-items:center;gap:8px;margin:0 0 8px}.SKV_groupBulkBtn{font:inherit;font-size:12px;line-height:18px;color:var(--dsw-alias-state-business-primary);cursor:pointer;background:color-mix(in srgb, var(--dsw-alias-state-business-primary) 10%, transparent);border:1px solid color-mix(in srgb, var(--dsw-alias-state-business-primary) 35%, transparent);border-radius:999px;padding:4px 14px;white-space:nowrap;flex:none}.SKV_groupBulkBtn:hover:not(:disabled){background:color-mix(in srgb, var(--dsw-alias-state-business-primary) 16%, transparent)}.SKV_groupBulkBtn:disabled{cursor:default;opacity:.55}";
 const css = cssPage + cssChrome + cssCards + cssAdd + cssScope + cssMigrate + cssCategory + cssTree + cssPanelIcon + cssPanelIconMcp + cssTheme + cssEffects + cssChipRefresh + cssGroups;
@@ -165,6 +165,9 @@ const css = cssPage + cssChrome + cssCards + cssAdd + cssScope + cssMigrate + cs
 			scopeSelect: "SKV_scopeSelect",
 			scopeSelectLabel: "SKV_scopeSelectLabel",
 			scopeSelectChevron: "SKV_scopeSelectChevron",
+			scopeRow: "SKV_scopeRow",
+			scopeName: "SKV_scopeName",
+			scopeAlias: "SKV_scopeAlias",
 			groupBar: "SKV_groupBar",
 			groupItem: "SKV_groupItem",
 			groupItemCount: "SKV_groupItemCount",
@@ -774,7 +777,9 @@ const css = cssPage + cssChrome + cssCards + cssAdd + cssScope + cssMigrate + cs
 										children: t("scopeGlobal")
 									}), ...known.map((option) => (0, react_jsx_runtime.jsx)("option", {
 										value: option.path,
-										children: option.label + " — " + option.path
+										// <select> 的 option 只能放纯文本，没有弱色小字：被并入的工作区名
+										// 直接接在主名后面，用中点分隔。
+										children: option.label + (wsAliases(option).length > 0 ? " · " + wsAliases(option).join(" · ") : "") + " — " + option.path
 									}, option.path))]
 								})]
 							}), (0, react_jsx_runtime.jsxs)("div", {
@@ -880,6 +885,31 @@ const css = cssPage + cssChrome + cssCards + cssAdd + cssScope + cssMigrate + cs
 			});
 		}
 
+// ── 工作区作用域的显示名（两个页面共用同一份数据与同一套折叠规则）─────────
+/**
+ * 一条 `workspaces` 条目里被并入的工作区名。宿主的枚举口径是唯一出处：前端
+ * 不自己判断谁并谁，只负责把 `aliases` 折成计数与悬停明细。
+ */
+const wsAliases = (entry) =>
+	entry !== null && entry !== undefined && Array.isArray(entry.aliases)
+		? entry.aliases.filter((name) => typeof name === "string" && name !== "")
+		: [];
+/**
+ * 一个作用域在 UI 上的显示名：承担显示名的工作区（`label`），以及被并入的同项目根
+ * 工作区（`aliases`）。条目缺失（例如宿主较旧、或路径已不在列表里）时退回文件夹名。
+ */
+const wsDisplay = (workspaces, path) => {
+	const hit = (Array.isArray(workspaces) ? workspaces : []).find((workspace) => workspace?.path === path);
+	const label = hit !== undefined && typeof hit.label === "string" && hit.label !== "" ? hit.label : "";
+	const segments = String(path).replaceAll("\\", "/").split("/").filter(Boolean);
+	return {
+		primary: label !== "" ? label : segments.length > 0 ? segments[segments.length - 1] : String(path),
+		aliases: wsAliases(hit)
+	};
+};
+/** 悬停明细：主名 + 被并入的工作区名连成一行（中点只是排版符，不是文案）。 */
+const wsHoverTitle = (display) => [display.primary].concat(display.aliases).join(" · ");
+
 // ── 批量迁移对话框（源/目标均为下拉表单，目标可多选）───────────────────
 		function MigrateDialog({ t, options, from, setFrom, targets, toggleTarget, mode, setMode, skills, selected, toggle, selectAll, busy, result, error, onConfirm, onCancel, onClose }) {
 			const known = Array.isArray(options) ? options : [];
@@ -893,6 +923,19 @@ const css = cssPage + cssChrome + cssCards + cssAdd + cssScope + cssMigrate + cs
 				if (value === null || value === undefined || value === "global") return t("scopeGlobal");
 				const hit = known.find((option) => option.path === value);
 				return hit !== undefined && typeof hit.label === "string" && hit.label !== "" ? hit.label : value;
+			};
+			/**
+			 * 一行作用域选项的别名字条：该根下还被并入了哪些工作区，以弱色小字并列。
+			 * 明细挂在它自己身上，避免和同一行 `.SKV_wsPath` 的路径提示互相顶掉。
+			 */
+			const scopeAliasNode = (option) => {
+				const display = wsDisplay(known, option.path);
+				if (display.aliases.length === 0) return null;
+				return (0, react_jsx_runtime.jsx)("span", {
+					className: c.scopeAlias,
+					title: wsHoverTitle(display),
+					children: display.aliases.join(" · ")
+				});
 			};
 			return (0, react_jsx_runtime.jsx)("div", {
 				className: c.scopeOverlay,
@@ -934,7 +977,7 @@ const css = cssPage + cssChrome + cssCards + cssAdd + cssScope + cssMigrate + cs
 								}), (0, react_jsx_runtime.jsx)("span", {
 									className: c.migrateOptionLabel,
 									children: option.label
-								}), (0, react_jsx_runtime.jsx)("span", {
+								}), scopeAliasNode(option), (0, react_jsx_runtime.jsx)("span", {
 									className: c.wsPath,
 									title: option.path,
 									children: option.path
@@ -981,7 +1024,7 @@ const css = cssPage + cssChrome + cssCards + cssAdd + cssScope + cssMigrate + cs
 							}), (0, react_jsx_runtime.jsx)("span", {
 								className: c.migrateOptionLabel,
 								children: option.label
-							}), (0, react_jsx_runtime.jsx)("span", {
+							}), scopeAliasNode(option), (0, react_jsx_runtime.jsx)("span", {
 								className: c.wsPath,
 								title: option.path,
 								children: option.path
@@ -1572,12 +1615,26 @@ function SkillsSection(props) {
 			const normalizedQuery = query.trim().toLocaleLowerCase();
 			const skills = listState.status === "ready" ? listState.skills : [];
 						const scopeOf = (skill) => (skill.scope !== undefined && skill.scope !== null && skill.scope.kind === "workspace" ? skill.scope.path : "global");
-			const labelOf = (path) => {
-				// 优先用 DSH 注册表的工作区名称（与文件夹名解耦），取不到回退文件夹名。
-				const hit = (Array.isArray(wsOptions) ? wsOptions : []).find((workspace) => workspace.path === path);
-				if (hit !== undefined && typeof hit.label === "string" && hit.label !== "") return hit.label;
-				const parts = String(path).replaceAll("\\", "/").split("/").filter(Boolean);
-				return parts.length > 0 ? parts[parts.length - 1] : String(path);
+			const labelOf = (path) => wsDisplay(wsOptions, path).primary;
+			/**
+			 * 作用域的下拉项与触发器共用的两段标签：主名 + 被并入工作区的弱色小字。
+			 * 主名 `flex:1` 负责截断、别名 `flex:0 1 auto` 只在超长时自己截断，因此菜单里
+			 * 各行的别名会自然对齐成一列（卡片宽度取最宽的一行）。悬停明细兜住截断。
+			 */
+			const scopeLabelNode = (path) => {
+				const display = wsDisplay(wsOptions, path);
+				const folded = display.aliases.length;
+				return (0, react_jsx_runtime.jsxs)("span", {
+					className: c.scopeRow,
+					...(folded > 0 ? { title: wsHoverTitle(display) } : {}),
+					children: [(0, react_jsx_runtime.jsx)("span", {
+						className: c.scopeName,
+						children: display.primary
+					}), folded > 0 ? (0, react_jsx_runtime.jsx)("span", {
+						className: c.scopeAlias,
+						children: display.aliases.join(" · ")
+					}) : null]
+				});
 			};
 			const knownPaths = (Array.isArray(wsOptions) ? wsOptions : []).map((workspace) => workspace.path);
 			const scopeKeys = ["global", ...knownPaths.filter((path) => path !== "global")];
@@ -1974,7 +2031,7 @@ function SkillsSection(props) {
 							onClose: () => {
 								setScopeMenuOpen(false);
 							},
-							items: scopeKeys.map((key) => ({ id: key, label: key === "global" ? t("scopeGlobal") : labelOf(key) })),
+							items: scopeKeys.map((key) => ({ id: key, label: key === "global" ? t("scopeGlobal") : scopeLabelNode(key) })),
 							selectedId: scopeFilter,
 							onSelect: (key) => {
 								setScopeFilter(key);
@@ -1990,10 +2047,11 @@ function SkillsSection(props) {
 								onClick: () => {
 									setScopeMenuOpen((value) => !value);
 								},
-								// 按钮不显示计数：当前作用域的技能总数已由分组栏的「全部 N/M」给出。
+								// 按钮上的计数是「被并入的工作区数」，不是技能数：技能总数已由
+								// 分组栏的「全部 N/M」给出，两者不要混。
 								children: [(0, react_jsx_runtime.jsx)("span", {
 									className: c.scopeSelectLabel,
-									children: scopeFilter === "global" ? t("scopeGlobal") : labelOf(scopeFilter)
+									children: scopeFilter === "global" ? t("scopeGlobal") : scopeLabelNode(scopeFilter)
 								}), (0, react_jsx_runtime.jsx)(primitiveIcon("IconChevronDownOutlineRegular", "IconChevronDownOutline14"), {
 									size: 14,
 									className: c.scopeSelectChevron
@@ -2262,10 +2320,9 @@ migrator !== null ? (0, react_jsx_runtime.jsx)(MigrateDialog, {
                         scopeLabel: "作用域",
                         scopeGlobal: "全局",
                         scopeWorkspaceBadge: "工作区",
-                        workspaceSubtitle: "工作区声明写在 <工作区>/.dsh/mcp.json，只对 cwd 落在该工作区的会话生效。",
+                        workspaceSubtitle: "<工作区>/.dsh/mcp.json，不含.git的子工作区共用这一份，改动对新开的会话生效。",
                         workspaceEmpty: "该工作区还没有 MCP 服务器。",
-                        workspaceConflict: "与全局同名、已忽略：",
-                        workspaceOnlyNewSessions: "改动对新开的会话生效。"
+                        workspaceConflict: "与全局同名、已忽略："
                 };
                 const mcpEn = {
                         nav: "MCP",
@@ -2330,16 +2387,15 @@ migrator !== null ? (0, react_jsx_runtime.jsx)(MigrateDialog, {
                         scopeLabel: "Scope",
                         scopeGlobal: "Global",
                         scopeWorkspaceBadge: "Workspace",
-                        workspaceSubtitle: "Workspace declarations live in <workspace>/.dsh/mcp.json and apply only to sessions whose cwd resolves to that workspace.",
+                        workspaceSubtitle: "<workspace>/.dsh/mcp.json; sub-workspaces without their own .git share this one, and changes apply to newly opened sessions.",
                         workspaceEmpty: "No MCP servers in this workspace yet.",
-                        workspaceConflict: "Same name as a global server, ignored: ",
-                        workspaceOnlyNewSessions: "Changes apply to newly opened sessions."
+                        workspaceConflict: "Same name as a global server, ignored: "
                 };
 
                 const cssMcpEffects = "@keyframes skvFadeIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}@keyframes skvFadeOnly{from{opacity:0}to{opacity:1}}.MCP_card{transition:border-color .18s cubic-bezier(.22,.61,.36,1),box-shadow .18s ease}.MCP_card:hover{border-color:var(--dsw-alias-border-l1);box-shadow:var(--dsw-shadow-lv1)}.MCP_dot{transition:background-color .2s ease}.MCP_input,.MCP_textarea{transition:border-color .15s ease,box-shadow .15s ease}.MCP_transportBtn{transition:background-color .15s ease,border-color .15s ease,color .15s ease}.MCP_actionBtn,.MCP_dangerBtn,.MCP_iconBtn,.MCP_add,.MCP_advancedToggle{transition:background-color .15s ease,border-color .15s ease,transform .1s ease}.MCP_actionBtn:active:not(:disabled),.MCP_dangerBtn:active:not(:disabled),.MCP_iconBtn:active,.MCP_add:active{transform:scale(.96)}.MCP_actionBtn:focus-visible,.MCP_dangerBtn:focus-visible,.MCP_iconBtn:focus-visible,.MCP_add:focus-visible,.MCP_transportBtn:focus-visible{outline:2px solid var(--dsw-alias-state-business-primary);outline-offset:1px}.MCP_cards{animation:skvFadeOnly .2s ease}.MCP_result{animation:skvFadeIn .18s ease}@media (prefers-reduced-motion: reduce){.MCP_section *{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}}";
 const cssMcp = ".MCP_section{position:relative;width:100%;max-width:760px;color:var(--dsw-alias-label-primary);display:flex;flex-direction:column;gap:14px}.MCP_head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.MCP_head h3{font-size:14px;font-weight:600;line-height:20px;margin:0}.MCP_sub{color:var(--dsw-alias-label-tertiary);font-size:12px;line-height:18px;margin:0}.MCP_toolbar{display:flex;align-items:center;gap:8px}.MCP_add{font:inherit;color:var(--dsw-alias-state-business-primary);cursor:pointer;background:0 0;border:1px dashed var(--dsw-alias-border-l1);border-radius:8px;padding:7px 16px;font-size:13px;line-height:20px;display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box}.MCP_add:hover{background:var(--dsw-alias-interactive-bg-hover)}.MCP_cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.MCP_card{border:1px solid var(--dsw-alias-border-l2);background:var(--dsw-alias-bg-layer-3);border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:8px;min-width:0}.MCP_cardTop{display:flex;align-items:center;gap:8px;min-width:0}.MCP_name{font-size:13px;font-weight:600;line-height:20px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.MCP_badges{display:inline-flex;align-items:center;gap:6px;flex:none}.MCP_badge{background:var(--dsw-alias-bg-layer-1);color:var(--dsw-alias-label-secondary);border-radius:5px;padding:1px 6px;font-size:11px;line-height:16px}.MCP_meta{display:flex;align-items:center;gap:8px;color:var(--dsw-alias-label-secondary);font-size:12px;line-height:18px}.MCP_dot{width:7px;height:7px;border-radius:999px;background:var(--dsw-alias-label-tertiary);flex:none}.MCP_dot[data-on=true]{background:var(--dsw-alias-state-success-primary)}.MCP_dot[data-err=true]{background:var(--dsw-alias-state-error-primary)}.MCP_actions{display:flex;align-items:center;gap:8px;border-top:1px solid var(--dsw-alias-border-l2);padding-top:8px;flex-wrap:wrap}.MCP_spacer{flex:1}.MCP_form{display:grid;grid-template-columns:1fr 1fr;gap:10px}.MCP_field{display:flex;flex-direction:column;gap:5px}.MCP_field[data-wide=true]{grid-column:1 / -1}.MCP_label{font-size:12px;line-height:18px;color:var(--dsw-alias-label-secondary);margin:0}.MCP_input{box-sizing:border-box;width:100%;height:32px;font:inherit;font-size:13px;color:var(--dsw-alias-label-primary);background:var(--dsw-alias-bg-layer-1);border:1px solid var(--dsw-alias-border-l2);border-radius:8px;padding:0 8px}.MCP_input:focus-visible,.MCP_textarea:focus-visible{border-color:var(--dsw-alias-state-business-primary);box-shadow:0 0 0 2px color-mix(in srgb, var(--dsw-alias-state-business-primary) 18%, transparent);outline:none}.MCP_textarea{box-sizing:border-box;width:100%;min-height:64px;font:inherit;font-size:12px;line-height:18px;color:var(--dsw-alias-label-primary);background:var(--dsw-alias-bg-layer-1);border:1px solid var(--dsw-alias-border-l2);border-radius:8px;padding:6px 8px;resize:vertical}.MCP_transportRow{display:flex;gap:8px}.MCP_transportBtn{font:inherit;font-size:13px;line-height:20px;color:var(--dsw-alias-label-secondary);cursor:pointer;background:var(--dsw-alias-bg-layer-1);border:1px solid var(--dsw-alias-border-l2);border-radius:999px;padding:4px 14px}.MCP_transportBtn[data-active=true]{color:var(--dsw-alias-state-business-primary);border-color:var(--dsw-alias-state-business-primary);background:color-mix(in srgb, var(--dsw-alias-state-business-primary) 12%, transparent)}.MCP_secretKeys{display:flex;flex-wrap:wrap;gap:6px}.MCP_key{display:inline-flex;align-items:center;gap:6px;background:var(--dsw-alias-bg-layer-1);border:1px solid var(--dsw-alias-border-l2);border-radius:999px;padding:2px 8px;font-size:11px;line-height:16px}.MCP_key button{font:inherit;color:var(--dsw-alias-state-error-primary);cursor:pointer;background:0 0;border:none;padding:0}.MCP_checkRow{display:flex;align-items:center;gap:8px;font-size:12px;line-height:18px;color:var(--dsw-alias-label-secondary)}.MCP_result{border:1px solid var(--dsw-alias-border-l2);border-radius:8px;padding:8px 10px;font-size:12px;line-height:18px;max-height:160px;overflow:auto}.MCP_actionBtn{font:inherit;color:var(--dsw-alias-label-primary);cursor:pointer;background:0 0;border:1px solid var(--dsw-alias-border-l2);border-radius:14px;padding:0 12px;font-size:12px;line-height:26px;height:28px;display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;box-sizing:border-box}.MCP_actionBtn:hover:not(:disabled){background:var(--dsw-alias-interactive-bg-hover-solid)}.MCP_actionBtn:disabled{cursor:default;opacity:.6}.MCP_dangerBtn{font:inherit;color:var(--dsw-alias-state-error-primary);cursor:pointer;background:0 0;border:1px solid var(--dsw-alias-border-l2);border-radius:14px;padding:0 12px;font-size:12px;line-height:26px;height:28px;display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;box-sizing:border-box}.MCP_dangerBtn:hover:not(:disabled){background:var(--dsw-alias-interactive-bg-hover-solid)}.MCP_iconBtn{width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;color:var(--dsw-alias-label-secondary);cursor:pointer;background:0 0;border:1px solid var(--dsw-alias-border-l2);border-radius:6px;padding:0;flex:none}.MCP_iconBtn:hover{background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-primary)}.MCP_advancedToggle{font:inherit;color:var(--dsw-alias-label-secondary);cursor:pointer;background:0 0;border:1px dashed var(--dsw-alias-border-l1);border-radius:8px;padding:6px 12px;font-size:13px;line-height:20px}.MCP_advancedToggle:hover{background:var(--dsw-alias-interactive-bg-hover)}.MCP_result[data-ok=true]{border-color:color-mix(in srgb, var(--dsw-alias-state-success-primary) 40%, transparent);background:color-mix(in srgb, var(--dsw-alias-state-success-primary) 8%, transparent)}.MCP_result[data-ok=false]{border-color:color-mix(in srgb, var(--dsw-alias-state-error-primary) 40%, transparent);background:color-mix(in srgb, var(--dsw-alias-state-error-primary) 8%, transparent)}" + cssMcpEffects;
                 /** 作用域栏、工作区信息与凭证行的样式（与上面那份 MCP 样式一同注入）。 */
-                const cssMcpScope = ".MCP_scopeBar{display:flex;align-items:center;gap:6px;flex-wrap:wrap}.MCP_scopeBtn{font:inherit;cursor:pointer;background:var(--dsw-alias-bg-layer-1);color:var(--dsw-alias-label-secondary);border:1px solid var(--dsw-alias-border-l2);border-radius:999px;padding:3px 12px;font-size:12px;line-height:18px}.MCP_scopeBtn[data-active=true]{background:var(--dsw-alias-state-business-primary);border-color:var(--dsw-alias-state-business-primary);color:#fff}.MCP_wsInfo{display:flex;flex-direction:column;gap:4px;color:var(--dsw-alias-label-tertiary);font-size:12px;line-height:18px;word-break:break-all}.MCP_scopeLabel{color:var(--dsw-alias-label-tertiary);font-size:12px;line-height:18px}";
+                const cssMcpScope = ".MCP_scopeBar{display:flex;align-items:center;gap:6px;flex-wrap:wrap}.MCP_scopeBtn{font:inherit;cursor:pointer;background:var(--dsw-alias-bg-layer-1);color:var(--dsw-alias-label-secondary);border:1px solid var(--dsw-alias-border-l2);border-radius:999px;padding:3px 12px;font-size:12px;line-height:18px}.MCP_scopeBtn[data-active=true]{background:var(--dsw-alias-state-business-primary);border-color:var(--dsw-alias-state-business-primary);color:#fff}.MCP_wsInfo{display:flex;flex-direction:column;gap:4px;color:var(--dsw-alias-label-tertiary);font-size:12px;line-height:18px;word-break:break-all}.MCP_scopeLabel{color:var(--dsw-alias-label-tertiary);font-size:12px;line-height:18px}.MCP_scopeBtn[data-active=true] .SKV_scopeAlias{color:rgba(255,255,255,.72)}";
                 const mcpTagId = "dsh-skill-mcp-panel/McpSection.module.css";
                 if (typeof document !== "undefined") {
                         let mcpTag = document.querySelector("style[data-plugin-css=" + JSON.stringify(mcpTagId) + "]") as HTMLElement | null;
@@ -2385,7 +2441,10 @@ const cssMcp = ".MCP_section{position:relative;width:100%;max-width:760px;color:
                         scopeBar: "MCP_scopeBar",
                         scopeBtn: "MCP_scopeBtn",
                         wsInfo: "MCP_wsInfo",
-                        scopeLabel: "MCP_scopeLabel"
+                        scopeLabel: "MCP_scopeLabel",
+                        // 别名字条与技能页共用同一条规则（.SKV_scopeAlias 定义在技能半区
+                        // 的样式表里，MCP 半区只补选中态的覆盖）。
+                        alias: "SKV_scopeAlias"
                 };
 
                 function mcpParseLines(text) {
@@ -2803,13 +2862,23 @@ const cssMcp = ".MCP_section{position:relative;width:100%;max-width:760px;color:
                                         "data-active": scopePath === null ? "true" : "false",
                                         onClick: () => setScopePath(null),
                                         children: t("scopeGlobal")
-                                }), ...workspaceList.map((workspace) => (0, react_jsx_runtime.jsx)("button", {
-                                        type: "button",
-                                        className: m.scopeBtn,
-                                        "data-active": scopePath === workspace.path ? "true" : "false",
-                                        onClick: () => setScopePath(workspace.path),
-                                        children: workspace.label
-                                }, workspace.path))]
+                                }), ...workspaceList.map((workspace) => {
+                                        // 同一项目根下被并入的其他工作区名以弱色小字并列（技能页用同一套
+                                        // wsDisplay，两页口径一致）；悬停明细兜住被截断的长名单。
+                                        const display = wsDisplay(workspaceList, workspace.path);
+                                        const folded = display.aliases.length;
+                                        return (0, react_jsx_runtime.jsxs)("button", {
+                                                type: "button",
+                                                className: m.scopeBtn,
+                                                "data-active": scopePath === workspace.path ? "true" : "false",
+                                                ...(folded > 0 ? { title: wsHoverTitle(display) } : {}),
+                                                onClick: () => setScopePath(workspace.path),
+                                                children: [display.primary, folded > 0 ? (0, react_jsx_runtime.jsx)("span", {
+                                                        className: m.alias,
+                                                        children: display.aliases.join(" · ")
+                                                }) : null]
+                                        }, workspace.path);
+                                })]
                         });
                         /** 工作区卡片 = 共用卡片（serverCardView）+ 工作区徽标与回调。 */
                         const workspaceCard = (server) => serverCardView(server, {
@@ -2834,11 +2903,11 @@ const cssMcp = ".MCP_section{position:relative;width:100%;max-width:760px;color:
                                                         onClick: () => setWsRequest((value) => value + 1),
                                                         children: t("refresh")
                                                 })]
-                                        }), scopeBar(), (0, react_jsx_runtime.jsx)("p", { className: m.sub, children: t("workspaceSubtitle") }), (0, react_jsx_runtime.jsxs)("div", {
+                                        }), scopeBar(), (0, react_jsx_runtime.jsx)("p", { className: m.sub, children: t("workspaceSubtitle") }), Array.isArray(workspace.conflicts) && workspace.conflicts.length > 0 ? (0, react_jsx_runtime.jsx)("div", {
                                                 className: m.wsInfo,
-                                                children: [Array.isArray(workspace.conflicts) && workspace.conflicts.length > 0 ? (0, react_jsx_runtime.jsx)("span", { children: t("workspaceConflict") + workspace.conflicts.join(", ") }) : null, // 挂载结果只写日志：会话创建时算一次的东西放进视图会显示成过期信息。
-                        (0, react_jsx_runtime.jsx)("span", { children: t("workspaceOnlyNewSessions") })]
-                                        }), workspace.ok === false ? (0, react_jsx_runtime.jsxs)("div", {
+                                                // 挂载结果只写日志：会话创建时算一次的东西放进视图会显示成过期信息。
+                                                children: (0, react_jsx_runtime.jsx)("span", { children: t("workspaceConflict") + workspace.conflicts.join(", ") })
+                                        }) : null, workspace.ok === false ? (0, react_jsx_runtime.jsxs)("div", {
                                                 className: c.notice,
                                                 "data-kind": "error",
                                                 children: [(0, react_jsx_runtime.jsx)("span", { className: c.noticeText, children: String(workspace.error ?? "") }), (0, react_jsx_runtime.jsx)("button", {
