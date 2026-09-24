@@ -36,6 +36,7 @@ dsh-panel mcp test --workspace <path> <serverName>
   - fix: CLI 工作区作用域的未知 flag、传输错配、损坏文件覆盖、非交互确认
 ### 2026-09-24
   - fix: skill和MCP面板现在显示合并到项目根的作用域
+  - sync: 合并上游 v2.1.1（版本号跟到 2.1.1，新增 test-host-icons.mjs 图标回归守卫）
 
 ## Todo
 

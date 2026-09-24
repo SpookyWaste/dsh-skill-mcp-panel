@@ -36,6 +36,7 @@ Installation is the same as upstream (the npm package and Release tarball are pu
   - fix: CLI workspace scope — unknown flags, transport mismatches, overwriting a corrupt file, non-interactive confirmation
 ### 2026-09-24
   - fix: the skills and MCP panels now show scopes folded onto their project root
+  - sync: merged upstream v2.1.1 (version tracks 2.1.1; adds the test-host-icons.mjs icon regression guard)
 
 ## Todo
 
