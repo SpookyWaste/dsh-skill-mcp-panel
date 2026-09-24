@@ -69,6 +69,7 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.json && node scripts/strip-client-export.mjs",
+    "test": "node scripts/run-tests.mjs",
     "prepack": "tsc -p tsconfig.json && node scripts/strip-client-export.mjs"
   },
   "files": [

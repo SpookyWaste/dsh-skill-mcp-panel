@@ -10,6 +10,7 @@ Fork自[dsh-skill-mcp-panel](https://github.com/Fishquito7/dsh-skill-mcp-panel)�
 - **CLI 同步支持工作区作用域**：`dsh-panel mcp` 的 `add` / `list` / `remove` / `enable` / `disable` / `test` 都接受 `--workspace <path>`，写法与全局作用域对齐，但只声明键名（`--env-key` / `--header-key`）。
 - **DSH 0.1.7-alpha 适配**：现在按新名优先、旧名回退解析，同一份构建同时兼容两代 DSH。
 - **CLI 参数与写路径收敛**：未知 flag 不再被当成位置参数静默忽略（`--workspce` 拼错以前会去改**全局**作用域），传输方式与凭证参数错配会报错而不是静默丢弃，工作区声明文件损坏或版本不认识时写路径拒绝覆盖（不再清空已有声明），非交互 stdin 下的确认操作要求显式 `--yes`。
+- **CI 与测试入口**：新增 push/PR 触发的 GitHub Actions（构建 + 校验提交的 `lib/` 与 `src/` 一致 + 跑全部 `test-*.mjs`），本地用 `npm test` 一次跑完全部测试套件。
 
 ## 用法（本 fork 新增部分）
 
@@ -37,6 +38,7 @@ dsh-panel mcp test --workspace <path> <serverName>
 ### 2026-09-24
   - fix: skill和MCP面板现在显示合并到项目根的作用域
   - sync: 合并上游 v2.1.1（版本号跟到 2.1.1，新增 test-host-icons.mjs 图标回归守卫）
+  - ci: 新增 CI（构建、lib 漂移校验、全部测试套件）与 npm test 入口
 
 ## Todo
 

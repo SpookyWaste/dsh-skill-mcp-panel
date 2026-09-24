@@ -10,6 +10,7 @@ Original author: [Fishquito7](https://github.com/Fishquito7)
 - **The CLI covers the workspace scope too**: `add` / `list` / `remove` / `enable` / `disable` / `test` under `dsh-panel mcp` all accept `--workspace <path>`, matching the global-scope syntax, but declare key names only (`--env-key` / `--header-key`).
 - **DSH 0.1.7-alpha compatibility**: the build now resolves the new icon names first and falls back to the legacy ones, so one artifact works on both DSH generations.
 - **CLI argument and write-path hardening**: unknown flags are no longer silently treated as positional arguments (a typo like `--workspce` used to mutate the **global** scope), a credential flag that does not match the transport now fails loudly instead of being dropped, a corrupt or unrecognized workspace declaration file is never overwritten (previously its declarations were wiped), and confirmation prompts on a non-interactive stdin now require an explicit `--yes`.
+- **CI and a test entry point**: a push/PR-triggered GitHub Actions run (build + verify the committed `lib/` matches `src/` + run every `test-*.mjs`), and `npm test` to run the whole suite locally in one command.
 
 ## Usage (fork additions)
 
@@ -37,6 +38,7 @@ Installation is the same as upstream (the npm package and Release tarball are pu
 ### 2026-09-24
   - fix: the skills and MCP panels now show scopes folded onto their project root
   - sync: merged upstream v2.1.1 (version tracks 2.1.1; adds the test-host-icons.mjs icon regression guard)
+  - ci: added CI (build, lib drift check, full test suite) and an npm test entry point
 
 ## Todo
 
