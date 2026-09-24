@@ -20,8 +20,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      # 仓库刻意不跟踪 lockfile（.gitignore 里有 package-lock.json），检出后没有 lockfile，
+      # 所以这里必须用 npm install；npm ci 会以 EUSAGE 直接失败。
       - name: Install dependencies
-        run: npm ci --no-audit --no-fund
+        run: npm install --no-audit --no-fund
       - name: Build
         run: npm run build
       # 仓库提交了 lib/ 产物以便 Git 直装，漂移意味着消费者会拿到与源码不符的构建。
